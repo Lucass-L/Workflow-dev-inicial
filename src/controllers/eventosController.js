@@ -1,15 +1,21 @@
 import Evento from "../models/evento.js";
 
 class EventosController {
+  static liberaAcessoEventos = () => process.env.EVENTO_FLAG === "true";
+
   static listarEventos = async (req, res) => {
-    try {
-      const resultado = await Evento.pegarEventos();
-      if (!resultado) {
-        return res.status(404).send("Not found Events");
+    if (this.liberaAcessoEventos()) {
+      try {
+        const resultado = await Evento.pegarEventos();
+        if (!resultado) {
+          return res.status(404).send("Not found Events");
+        }
+        return res.status(200).json(resultado);
+      } catch (error) {
+        return res.status(500).json(error.message);
       }
-      return res.status(200).json(resultado);
-    } catch (error) {
-      return res.status(500).json(error.message);
+    } else {
+      return res.status(404).send();
     }
   };
 }
