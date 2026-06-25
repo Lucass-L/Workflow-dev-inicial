@@ -1,6 +1,6 @@
 /* eslint-disable class-methods-use-this */
 /* eslint-disable camelcase */
-import db from '../db/dbconfig.js';
+import db from "../db/dbconfig.js";
 
 class Editora {
   constructor({
@@ -20,11 +20,11 @@ class Editora {
   }
 
   static async pegarEditoras() {
-    return db.select('*').from('editoras');
+    return db.select("*").from("editoras");
   }
 
   static async pegarPeloId(id) {
-    const resultado = await db.select('*').from('editoras').where({ id });
+    const resultado = await db.select("*").from("editoras").where({ id });
     return resultado[0];
   }
 
@@ -36,21 +36,21 @@ class Editora {
       created_at: this.created_at,
       updated_at: this.updated_at,
     };
-    return db('editoras').insert(novaEditora);
+    return db("editoras").insert(novaEditora);
   }
 
   async atualizar(id) {
     // o update retorna a quantidade de rows atualizados e não o objeto do registro atualizado
-    await db('editoras')
+    await db("editoras")
       .where({ id })
       .update({ ...this, updated_at: new Date().toISOString() });
 
-    return db.select('*').from('editoras').where({ id });
+    return db.select("*").from("editoras").where({ id });
   }
 
   static async excluir(id) {
     // o del retorna a quantidade de rows deletados
-    return db('editoras')
+    return db("editoras")
       .where({ id })
       .del();
   }
@@ -66,7 +66,7 @@ class Editora {
   }
 
   static async pegarLivrosPorEditora(editoraId) {
-    return db('livros')
+    return db("livros")
       .where({ editora_id: editoraId });
   }
 }
