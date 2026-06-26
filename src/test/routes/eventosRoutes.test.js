@@ -1,12 +1,16 @@
 /* eslint-disable no-unused-expressions */
+/* eslint-disable import/no-mutable-exports */
 import { after, describe, it } from "mocha";
 import chai from "chai";
 import chaiHttp from "chai-http";
+import sinon from "sinon";
 import app from "../../app.js";
 import db from "../../db/dbconfig.js";
+import EventosController from "../../controllers/eventosController.js";
 
 chai.use(chaiHttp);
 const { expect } = chai;
+let stub;
 
 after(async () => {
   await db.destroy();
@@ -14,9 +18,9 @@ after(async () => {
 
 describe("GET em /eventos", () => {
   it("Deve retornar uma lista de eventos", (done) => {
-    process.env.EVENTO_FLAG = "true";
-    chai
-      .request(app)
+    // substituir a atribuição de EVENTO_FLAG pela linha abaixo
+    stub = sinon.stub(EventosController, "liberaAcessoEventos").returns(true);
+    chai.request(app)
       .get("/eventos")
       .set("Accept", "application/json")
       .end((err, res) => {
@@ -30,9 +34,9 @@ describe("GET em /eventos", () => {
   });
 
   it("Deve retornar erro 404", (done) => {
-    process.env.EVENTO_FLAG = "false";
-    chai
-      .request(app)
+    stub.restore();
+    stub = sinon.stub(EventosController, "liberaAcessoEventos").returns(false);
+    chai.request(app)
       .get("/eventos")
       .set("Accept", "application/json")
       .end((err, res) => {
